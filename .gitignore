@@ -6,3 +6,5 @@
 
 pubspec.lock
 build/
+flutter_lldb_helper.py
+flutter_lldbinit

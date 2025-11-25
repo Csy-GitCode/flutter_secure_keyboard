@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,24 +36,19 @@ const Color kKeyboardDefaultActionKeyColor = const Color(0xFF222222);
 const Color kKeyboardDefaultDoneKeyColor = const Color(0xFF1C7CDC);
 
 /// The default text style of the text inside the keyboard key.
-const TextStyle kKeyboardDefaultKeyTextStyle = const TextStyle(
-    color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w500);
+const TextStyle kKeyboardDefaultKeyTextStyle = const TextStyle(color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w500);
 
 /// The default text style of the text inside the key input monitor.
-const TextStyle kKeyboardDefaultInputTextStyle = const TextStyle(
-    color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w500);
+const TextStyle kKeyboardDefaultInputTextStyle = const TextStyle(color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w500);
 
 /// The default padding of the key input monitor.
-const EdgeInsetsGeometry kKeyInputMonitorDefaultPadding =
-    const EdgeInsets.only(left: 10.0, right: 5.0);
+const EdgeInsetsGeometry kKeyInputMonitorDefaultPadding = const EdgeInsets.only(left: 10.0, right: 5.0);
 
 /// The default padding of the keyboard.
-const EdgeInsetsGeometry kKeyboardDefaultPadding =
-    const EdgeInsets.symmetric(horizontal: 5.0);
+const EdgeInsetsGeometry kKeyboardDefaultPadding = const EdgeInsets.symmetric(horizontal: 5.0);
 
 /// Callback function when the string key touch is started.
-typedef StringKeyTouchStartCallback = void Function(
-    String keyText, Offset position, BoxConstraints constraints);
+typedef StringKeyTouchStartCallback = void Function(String keyText, Offset position, BoxConstraints constraints);
 
 /// Callback function when the string key touch is finished.
 typedef StringKeyTouchEndCallback = void Function();
@@ -240,14 +234,11 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
 
     final keyGenerator = SecureKeyboardKeyGenerator.instance;
     if (widget.type == SecureKeyboardType.NUMERIC) {
-      _definedKeyRows
-          .addAll(keyGenerator.getNumericKeyRows(widget.shuffleNumericKey));
+      _definedKeyRows.addAll(keyGenerator.getNumericKeyRows(widget.shuffleNumericKey));
     } else {
-      _definedKeyRows.addAll(
-          keyGenerator.getAlphanumericKeyRows(widget.shuffleNumericKey));
+      _definedKeyRows.addAll(keyGenerator.getAlphanumericKeyRows(widget.shuffleNumericKey));
     }
-    _specialKeyRows
-        .addAll(SecureKeyboardKeyGenerator.instance.getSpecialCharsKeyRows());
+    _specialKeyRows.addAll(SecureKeyboardKeyGenerator.instance.getSpecialCharsKeyRows());
   }
 
   void _refreshWidgetState() {
@@ -361,10 +352,14 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
       ),
     );
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false, // 拦截事件
+      onPopInvokedWithResult: (didPop, _) {
+        // true 不拦截事件；false 拦截事件
+        if (didPop) {
+          return;
+        }
         widget.onCloseKeyPressed();
-        return false;
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -388,8 +383,7 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
         onCancel: (subscription) => subscription.cancel(),
       ),
       initialData: _charCodes,
-      builder: (context, snapshot) =>
-          _buildKeyInputMonitorLayout(snapshot.data ?? _charCodes),
+      builder: (context, snapshot) => _buildKeyInputMonitorLayout(snapshot.data ?? _charCodes),
     );
   }
 
@@ -412,13 +406,12 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
       secureTextStyle = widget.inputTextStyle;
     } else {
       secureText = widget.hintText ?? '';
-      secureTextStyle = widget.inputTextStyle
-          .copyWith(color: widget.inputTextStyle.color?.withOpacity(0.5));
+      secureTextStyle = widget.inputTextStyle.copyWith(color: widget.inputTextStyle.color?.withValues(alpha: 0.5));
     }
 
     String? lengthSymbol = widget.inputTextLengthSymbol;
     if (lengthSymbol == null) {
-      lengthSymbol = (Platform.localeName == 'ko_KR') ? '자' : 'digit';
+      lengthSymbol = '位';
     }
     final lengthText = '${charCodes.length}$lengthSymbol';
 
@@ -552,34 +545,26 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
       case SecureKeyboardKeyAction.SHIFT:
         keyData = Icon(
           Icons.arrow_upward,
-          color: (_isWeakShiftEnabled && !_isStrongShiftEnabled)
-              ? widget.activatedKeyColor ?? widget.doneKeyColor
-              : widget.keyTextStyle.color,
+          color: (_isWeakShiftEnabled && !_isStrongShiftEnabled) ? widget.activatedKeyColor ?? widget.doneKeyColor : widget.keyTextStyle.color,
         );
         break;
       case SecureKeyboardKeyAction.CLEAR:
         String? keyText = widget.clearKeyText;
         if (keyText == null || keyText.isEmpty) {
-          keyText = (Platform.localeName == 'ko_KR') ? '초기화' : 'Clear';
+          keyText = '清除';
         }
         keyData = Text(keyText, style: widget.keyTextStyle);
         break;
       case SecureKeyboardKeyAction.DONE:
         String? keyText = widget.doneKeyText;
         if (keyText == null || keyText.isEmpty) {
-          keyText = (Platform.localeName == 'ko_KR') ? '입력완료' : 'Done';
+          keyText = '完成';
         }
         keyData = Text(keyText, style: widget.keyTextStyle);
         break;
       case SecureKeyboardKeyAction.SPECIAL_CHARACTERS:
         keyData = Text(
-          _isSpecialCharsEnabled
-              ? (_isWeakShiftEnabled ||
-                      _isStrongShiftEnabled ||
-                      widget.alwaysCaps
-                  ? 'ABC'
-                  : 'abc')
-              : '!@#',
+          _isSpecialCharsEnabled ? (_isWeakShiftEnabled || _isStrongShiftEnabled || widget.alwaysCaps ? 'ABC' : 'abc') : '!@#',
           style: widget.keyTextStyle,
         );
         break;
@@ -590,8 +575,7 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
     Color keyColor;
     if (key.action == SecureKeyboardKeyAction.DONE) {
       keyColor = widget.doneKeyColor;
-    } else if (key.action == SecureKeyboardKeyAction.SHIFT &&
-        (_isStrongShiftEnabled || widget.alwaysCaps)) {
+    } else if (key.action == SecureKeyboardKeyAction.SHIFT && (_isStrongShiftEnabled || widget.alwaysCaps)) {
       keyColor = widget.activatedKeyColor ?? widget.doneKeyColor;
     } else {
       keyColor = widget.actionKeyColor;
@@ -602,8 +586,7 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
     if (key.action == SecureKeyboardKeyAction.BACKSPACE) {
       onLongPressStart = (constraints) {
         final delay = const Duration(milliseconds: kBackspaceEventDelay);
-        _backspaceEventGenerator =
-            Timer.periodic(delay, (_) => _onKeyPressed(key));
+        _backspaceEventGenerator = Timer.periodic(delay, (_) => _onKeyPressed(key));
       };
       onLongPressEnd = (constraints) {
         _backspaceEventGenerator?.cancel();
@@ -697,9 +680,7 @@ class _KeyboardKeyLayoutState extends State<_KeyboardKeyLayout> {
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: _isKeyPressing
-                      ? Theme.of(context).splashColor
-                      : Colors.transparent,
+                  color: _isKeyPressing ? Theme.of(context).splashColor : Colors.transparent,
                   borderRadius: widget.borderRadius,
                 ),
               ),
@@ -731,9 +712,7 @@ class _KeyboardKeyLayoutState extends State<_KeyboardKeyLayout> {
             setState(() => _isKeyPressing = false);
             widget.onTouchEnd?.call(constraints);
           },
-          onLongPressStart: widget.onLongPressStart == null
-              ? null
-              : (_) => widget.onLongPressStart?.call(constraints),
+          onLongPressStart: widget.onLongPressStart == null ? null : (_) => widget.onLongPressStart?.call(constraints),
           onLongPressEnd: widget.onLongPressEnd == null
               ? null
               : (_) {
