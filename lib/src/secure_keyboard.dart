@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_keyboard/src/secure_keyboard_key_action.dart';
@@ -314,7 +315,9 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
   void initState() {
     super.initState();
     _initWidgetState();
-    _channel.invokeMethod('secureModeOn');
+    if (!kIsWeb) {
+      _channel.invokeMethod('secureModeOn');
+    }
   }
 
   @override
@@ -622,8 +625,10 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
 
   @override
   void dispose() {
-    _channel.invokeMethod('secureModeOff');
     _charCodesController.close();
+    if (!kIsWeb) {
+      _channel.invokeMethod('secureModeOff');
+    }
     super.dispose();
   }
 }
