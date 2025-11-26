@@ -551,7 +551,7 @@ class _SecureKeyboardState extends State<SecureKeyboard> {
       case SecureKeyboardKeyAction.CLEAR:
         String? keyText = widget.clearKeyText;
         if (keyText == null || keyText.isEmpty) {
-          keyText = '清除';
+          keyText = '清空';
         }
         keyData = Text(keyText, style: widget.keyTextStyle);
         break;
