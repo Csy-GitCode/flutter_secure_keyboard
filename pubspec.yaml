@@ -25,3 +25,6 @@ flutter:
         pluginClass: FlutterSecureKeyboardPlugin
       ios:
         pluginClass: FlutterSecureKeyboardPlugin
+      ohos:
+        package: com.pravera.flutter_secure_keyboard
+        pluginClass: FlutterPluginKeyboardPlugin

@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "flutter_secure_keyboard",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}
