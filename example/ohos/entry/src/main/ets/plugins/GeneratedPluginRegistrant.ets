@@ -1,6 +1,5 @@
 import { FlutterEngine, Log } from '@ohos/flutter_ohos';
 import FlutterPluginKeyboardPlugin from 'flutter_secure_keyboard';
-import IntegrationTestPlugin from 'integration_test';
 
 /**
  * Generated file. Do not edit.
@@ -15,7 +14,6 @@ export class GeneratedPluginRegistrant {
   static registerWith(flutterEngine: FlutterEngine) {
     try {
       flutterEngine.getPlugins()?.add(new FlutterPluginKeyboardPlugin());
-      flutterEngine.getPlugins()?.add(new IntegrationTestPlugin());
     } catch (e) {
       Log.e(
         TAG,
