@@ -10,8 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  flutter_keyboard_visibility: ^6.0.0
+  flutter_keyboard_visibility:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_keyboard_visibility.git
+      path: flutter_keyboard_visibility
+      ref: master
 
 dev_dependencies:
   flutter_test:

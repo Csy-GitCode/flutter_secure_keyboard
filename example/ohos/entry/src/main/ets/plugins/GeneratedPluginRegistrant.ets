@@ -1,4 +1,5 @@
 import { FlutterEngine, Log } from '@ohos/flutter_ohos';
+import FlutterKeyboardVisibilityPlugin from 'flutter_keyboard_visibility';
 import FlutterPluginKeyboardPlugin from 'flutter_secure_keyboard';
 
 /**
@@ -13,6 +14,7 @@ export class GeneratedPluginRegistrant {
 
   static registerWith(flutterEngine: FlutterEngine) {
     try {
+      flutterEngine.getPlugins()?.add(new FlutterKeyboardVisibilityPlugin());
       flutterEngine.getPlugins()?.add(new FlutterPluginKeyboardPlugin());
     } catch (e) {
       Log.e(
